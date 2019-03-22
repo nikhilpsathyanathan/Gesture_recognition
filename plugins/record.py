@@ -4,6 +4,7 @@ from pygarl.data_readers import SerialDataReader
 from pygarl.middlewares import GradientThresholdMiddleware, PlotterMiddleware, LengthThresholdMiddleware
 from pygarl.recorders import FileGestureRecorder
 from pygarl.sample_managers import DiscreteSampleManager, StreamSampleManager
+from flask import Flask, flash
 
 # python -m pygarl record -p COM6 -d D:\GitHub\pygarl-datasets\finger_dataset -g right -m stream
 from pygarl.utils import RandomGestureChooser
@@ -58,6 +59,7 @@ def record_new_samples(port, gesture_id, target_dir, expected_axis):
 
     # Start the main loop
     sdr.mainloop()
+    flash('Action Completed')
 
 
 def record_new_samples_stream(port, gesture_id, target_dir, expected_axis, threshold=50):
@@ -123,6 +125,8 @@ def record_new_samples_stream(port, gesture_id, target_dir, expected_axis, thres
 
     # Start the main loop
     sdr.mainloop()
+    flash('Action Completed')
+    
 
 
 def record_new_samples_piezo(port, gesture_id, target_dir, threshold=5):
@@ -174,3 +178,4 @@ def record_new_samples_piezo(port, gesture_id, target_dir, threshold=5):
 
     # Start the main loop
     sdr.mainloop()
+    flash('Action Completed')

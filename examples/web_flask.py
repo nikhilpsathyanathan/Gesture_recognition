@@ -1,36 +1,42 @@
 import os
-from flask import Flask, render_template, request
+from flask import Flask, flash, render_template, request, Session
+
 
 app = Flask(__name__)
+app.config['SESSION_TYPE'] = 'memcached'
+app.config['SECRET_KEY'] = 'super secret key'
+sess = Session()
 @app.route('/')
 def student():
     return render_template('index.html')
 
+
 @app.route('/train')
 def train():
+    flash('add action')
     return render_template('train.html')
 
+
+@app.route('/model')
+def model():
+    flash('please wait it is training the model')
+    os.system("python -m pygarl train -d . -c svm model.svm")
+    return render_template('train.html')
+
+@app.route('/predict')
+def predict():
+    flash('please wait it is training the model')
+    os.system('python glove.py')
+    return render_template('predict.html')
+
+
 @app.route('/train', methods=['POST'])
-def my_form_post():
+def train_args():
     action = request.form['text']
-    args="python -m pygarl record -p COM -d . -g "+action+" -a 11 -m discrete"
+    args = "python -m pygarl record -p COM -d . -g "+action+" -a 11 -m discrete"
     print(args)
     os.system(str(args))
     return render_template('train.html')
-
-
-@app.route('/result', methods=['POST', 'GET'])
-def result():
-    if request.method == 'POST':
-        o_id = request.form['offense_id']
-        oc_id = request.form['offense_category_id']
-        lat = request.form['lon']
-        lon = request.form['lat']
-
-        if "1" in str(result):
-            return ' is 1- crime '
-        elif "0" in str(result):
-            return ' is 0-not crime'
 
 
 if __name__ == '__main__':
